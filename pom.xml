@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.bingohuang</groupId>
-    <artifactId>springboot-trial</artifactId>
+    <artifactId>springboot15demo</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>springboot-trial</name>
+    <name>springboot15demo</name>
     <description>
         1. GraphQL is invented by Facebook as a better replacement of REST for Web APIs
     </description>
