@@ -24,12 +24,13 @@ public class MimeTypes {
      * @return String mine type
      */
     public static String getMimeType(String fileExtension) {
-        return mimeTypes.getOrDefault(fileExtension.toLowerCase(), "text/html");
+        return map.getOrDefault(fileExtension.toLowerCase(), "text/html");
     }
 
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
     // http://www.iana.org/assignments/media-types/media-types.xhtml
-    private static Map<String, String> mimeTypes = new HashMap<String, String>() {{
+    // https://www.google.com/search?newwindow=1&q=docx%20content%20type
+    private static Map<String, String> map = new HashMap<String, String>() {{
         put("ai", "application/postscript");
         put("aif", "audio/x-aiff");
         put("aifc", "audio/x-aiff");
@@ -122,7 +123,6 @@ public class MimeTypes {
         put("ps", "application/postscript");
         put("qt", "video/quicktime");
         put("ra", "audio/x-pn-realaudio");
-        put("ra", "audio/x-realaudio");
         put("ram", "audio/x-pn-realaudio");
         put("ras", "image/x-cmu-raster");
         put("rdf", "application/rdf+xml");
@@ -130,7 +130,6 @@ public class MimeTypes {
         put("rm", "audio/x-pn-realaudio");
         put("roff", "application/x-troff");
         put("rpm", "application/x-rpm");
-        put("rpm", "audio/x-pn-realaudio");
         put("rtf", "application/rtf");
         put("rtx", "text/richtext");
         put("ser", "application/java-serialized-object");
