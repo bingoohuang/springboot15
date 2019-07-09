@@ -10,7 +10,8 @@
 
     <name>springboot15demo</name>
     <description>
-        1. GraphQL is invented by Facebook as a better replacement of REST for Web APIs
+        1. GraphQL is invented by Facebook as a better replacement of REST for Web APIs.
+        2. Excel/word downloads.
     </description>
 
     <parent>
