@@ -11,6 +11,8 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import lombok.Cleanup;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -19,8 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 @RestController
@@ -28,8 +30,7 @@ import java.util.List;
 public class BookSearchController {
     @Autowired
     private BookService service;
-    // load graphqls file
-    @Value("classpath:book.graphql")
+    @Value("classpath:graphql/book.graphql")
     private Resource schemaResource;
     @Autowired
     private AllBookDataFetcher allBookDataFetcher;
@@ -40,9 +41,10 @@ public class BookSearchController {
 
     // load schema at application start up
     @PostConstruct
-    public void loadSchema() throws IOException {
+    @SneakyThrows
+    public void loadSchema() {
         // get the schema
-        File schemaFile = schemaResource.getFile();
+        @Cleanup Reader schemaFile = new InputStreamReader(schemaResource.getInputStream());
         // parse schema
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(schemaFile);
         RuntimeWiring wiring = buildRuntimeWiring();
@@ -62,6 +64,7 @@ public class BookSearchController {
                 .dataFetcher("allBooks", allBookDataFetcher).dataFetcher("book", bookDataFetcher)).build();
     }
 
+    // http://127.0.0.1:8080/bookstore/booksList
     @GetMapping("/booksList")
     public List<Book> getBooksList() {
         return service.findAllBooks();
@@ -79,7 +82,7 @@ public class BookSearchController {
     @PostMapping("/getAllBooks")
     public ResponseEntity<Object> getAllBooks(@RequestBody String query) {
         ExecutionResult result = graphQL.execute(query);
-        return new ResponseEntity<Object>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/search/{bookId}")
@@ -90,6 +93,6 @@ public class BookSearchController {
     @PostMapping("/getBookById")
     public ResponseEntity<Object> getBookById(@RequestBody String query) {
         ExecutionResult result = graphQL.execute(query);
-        return new ResponseEntity<Object>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
