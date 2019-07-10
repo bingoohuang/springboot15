@@ -45,6 +45,15 @@ public class DlController {
         }
 
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Disposition
+        // https://cn.charlee.li/use-utf8-in-download-filename.html
+        // 其实按照RFC2231的定义， 多语言编码的Content-Disposition应该这么定义：
+        // Content-Disposition: attachment; filename*="utf8''%E4%B8%AD%E6%96%87%20%E6%96%87%E4%BB%B6%E5%90%8D.txt"
+
+        // 注意：跨域CORS时，需要配置： Access-Control-Expose-Headers: Content-Disposition
+        // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Access-Control-Expose-Headers
+
         headers.add("Content-Disposition", "attachment;filename=" + f + ";filename*=UTF-8''" + f);
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
