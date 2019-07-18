@@ -1,15 +1,18 @@
 package com.github.bingoohuang.springboottrial.util;
 
+import lombok.SneakyThrows;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
-import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+// More https://github.com/NCSC-NL/PEF/blob/master/src/main/java/nl/minvenj/pef/ffx/FFX.java
 
+// https://github.com/michaeltandy/java-ffx-format-preserving-encryption
 public class FFX {
     private final byte VERSION_ONE = 1;
     private final byte ADDITION_BLOCKWISE = 1;
@@ -164,16 +167,13 @@ public class FFX {
         };
     }
 
+    @SneakyThrows
     static byte[] aesCbcMac(byte[] toEncrypt, byte[] aesKey) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-            SecretKeySpec key = new SecretKeySpec(aesKey, "AES");
-            cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
-            byte[] encrypted = cipher.doFinal(toEncrypt);
-            return Arrays.copyOfRange(encrypted, encrypted.length - 16, encrypted.length);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException("This should never happen?", e);
-        }
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+        SecretKeySpec key = new SecretKeySpec(aesKey, "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
+        byte[] encrypted = cipher.doFinal(toEncrypt);
+        return Arrays.copyOfRange(encrypted, encrypted.length - 16, encrypted.length);
     }
 
     static byte[] numToBytes(long num, int byteCount) {

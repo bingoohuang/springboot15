@@ -14,6 +14,30 @@ import static org.junit.Assert.assertEquals;
 public class FFXTest {
 
     @Test
+    public void testEncryptX() {
+        byte[] aesKey = DatatypeConverter.parseHexBinary("2b7e151628aed2a6abf7158809cf4f3c");
+        byte[] T = {};
+
+        int n = 10;
+
+        FFX instance = new FFX();
+        Set<BigInteger> set = new HashSet<>();
+
+        for (int i = 0; i < 10000; i++) {
+            BigInteger X = BigInteger.valueOf(i);
+            BigInteger result = instance.encrypt(aesKey, T, X, n, null);
+
+            if (set.contains(result)) {
+                throw new RuntimeException("duplicated");
+            }
+            set.add(result);
+            assertEquals(X, instance.decrypt(aesKey, T, result, n, null));
+
+            System.out.printf("%010d %010d\n", i, result);
+        }
+    }
+
+    @Test
     public void testFk() {
         // Round 0 of test vector 2 from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/ffx/aes-ffx-vectors.txt
         int n = 10;
@@ -60,31 +84,6 @@ public class FFXTest {
         assertEquals(X, instance.decrypt(aesKey, T, result, n, null));
     }
 
-
-    @Test
-    public void testEncryptX() {
-        // Test vector 2 from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/ffx/aes-ffx-vectors.txt
-        byte[] aesKey = DatatypeConverter.parseHexBinary("2b7e151628aed2a6abf7158809cf4f3c");
-        byte[] T = {};
-
-        int n = 10;
-
-        FFX instance = new FFX();
-        Set<BigInteger> set = new HashSet<>();
-
-        for (int i = 0; i < 10000; i++) {
-            BigInteger X = BigInteger.valueOf(i);
-            BigInteger result = instance.encrypt(aesKey, T, X, n, null);
-
-            if (set.contains(result)) {
-                throw new RuntimeException("duplicated");
-            }
-            set.add(result);
-            assertEquals(X, instance.decrypt(aesKey, T, result, n, null));
-
-            System.out.printf("%010d %010d\n", i, result.longValue());
-        }
-    }
 
     @Test
     public void testEncrypt2() {
